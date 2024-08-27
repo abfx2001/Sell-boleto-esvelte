@@ -6,6 +6,7 @@
     let userInput = '';
     let result = null;
     let error = null;
+    let preResult = null;
     let loading = false;
 
     async function fetchSOAPData() {
@@ -14,7 +15,7 @@
         error = null;
 
         try {
-            const response = await fetch('/api/posts', {
+            const response = await fetch('/api/buscaCpf', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -25,7 +26,8 @@
             });
 
             if (response.ok) {
-                result = await response.json();
+                preResult = await response.json();
+								result = JSON.parse(preResult.BuscaCPF_Chatbot_JsonResult).Condominio;
             } else {
                 error = await response.json();
             }
@@ -93,7 +95,16 @@
 	{:else if result}
 		<div class="max-w-2xl m-auto">
 			<h1>Resultados da Requisição SOAP</h1>
-			<p>{JSON.stringify(result)}</p>
+				{#each result as condominio}
+						<div class="border-2 border-secundary-500">
+								<p><strong>Nome do Condomínio:</strong> {condominio.nome}</p>
+								<p><strong>Bloco:</strong> {condominio.bloco}</p>
+								<p><strong>Unidade:</strong> {condominio.unidade}</p>
+								<p><strong>Tipo:</strong> {condominio.tipo}</p>
+								<p><strong>Gerente:</strong> {condominio.nome_gerente}</p>
+								<p><strong>Email do Gerente:</strong> {condominio.email}</p>
+						</div>
+				{/each}
 		</div>
 	{/if}
 	<!-- Page Route Content -->
